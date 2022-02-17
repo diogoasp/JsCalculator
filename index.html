@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
+    <script src='calculator.js'></script>
+</head>
+<body>
+    <div class="mid flex horizontal">
+        <main>
+            <div id="screen">
+                <span id="result"></span>
+            </div>
+            <div class="grid">
+                <button value="7" onclick="addElement(this.value)">7</button>
+                <button value="8" onclick="addElement(this.value)">8</button>
+                <button value="9" onclick="addElement(this.value)">9</button>
+                <button value="x" onclick="addOperator(this.value)">x</button>
+                <button value="4" onclick="addElement(this.value)">4</button>
+                <button value="5" onclick="addElement(this.value)">5</button>
+                <button value="6" onclick="addElement(this.value)">6</button>
+                <button value="/" onclick="addOperator(this.value)">/</button>
+                <button value="1" onclick="addElement(this.value)">1</button>
+                <button value="2" onclick="addElement(this.value)">2</button>
+                <button value="3" onclick="addElement(this.value)">3</button>
+                <button value="-" onclick="addOperator(this.value)">-</button>
+                <button value="c" onclick="clearAll()">C</button>
+                <button value="0" onclick="addElement(this.value)">0</button>
+                <button value="=" onclick="calculate()" >=</button>
+                <button value="+" onclick="addOperator(this.value)">+</button>
+            </div>
+        </main>
+        <aside id="backlog">
+            <h2>Histórico</h2>
+            <p id="log"></p>
+        </aside>
+    </div>
+</body>
+</html>
