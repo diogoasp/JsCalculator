@@ -6,36 +6,44 @@
     <title>Page Title</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
     <script src='calculator.js'></script>
+    <script src='animations.js'></script>
 </head>
 <body>
     <div class="mid flex horizontal">
         <main>
+            <div id="errors">
+                <span id="err"></span>
+            </div>
             <div id="screen">
                 <span id="result"></span>
             </div>
             <div class="grid">
-                <button value="7" onclick="addElement(this.value)">7</button>
-                <button value="8" onclick="addElement(this.value)">8</button>
-                <button value="9" onclick="addElement(this.value)">9</button>
-                <button value="x" onclick="addOperator(this.value)">x</button>
-                <button value="4" onclick="addElement(this.value)">4</button>
-                <button value="5" onclick="addElement(this.value)">5</button>
-                <button value="6" onclick="addElement(this.value)">6</button>
-                <button value="/" onclick="addOperator(this.value)">/</button>
-                <button value="1" onclick="addElement(this.value)">1</button>
-                <button value="2" onclick="addElement(this.value)">2</button>
-                <button value="3" onclick="addElement(this.value)">3</button>
-                <button value="-" onclick="addOperator(this.value)">-</button>
-                <button value="c" onclick="clearAll()">C</button>
-                <button value="0" onclick="addElement(this.value)">0</button>
-                <button value="=" onclick="calculate()" >=</button>
-                <button value="+" onclick="addOperator(this.value)">+</button>
+                <button class="elementButton" value="7">7</button>
+                <button class="elementButton" value="8">8</button>
+                <button class="elementButton" value="9">9</button>
+                <button class="operatorButton" value="x" >x</button>
+                <button class="elementButton" value="4">4</button>
+                <button class="elementButton" value="5">5</button>
+                <button class="elementButton" value="6">6</button>
+                <button class="operatorButton" value="/" >/</button>
+                <button class="elementButton" value="1">1</button>
+                <button class="elementButton" value="2">2</button>
+                <button class="elementButton" value="3" >3</button>
+                <button class="operatorButton" value="-" >-</button>
+                <button id="clear" value="c">C</button>
+                <button class="elementButton" value="0">0</button>
+                <button id="calculate" value="=">=</button>
+                <button class="operatorButton" value="+">+</button>
             </div>
         </main>
-        <aside id="backlog">
-            <h2>Histórico</h2>
-            <p id="log"></p>
+        <aside >
+            <button id="openHist" class=""><img id="imgHist" class="" src="img/historical.png" alt=""></button>
+            <div id="backlog" class="backlog">
+                <h2>Histórico</h2>
+                <p id="log"></p>
+            </div>
         </aside>
     </div>
 </body>

@@ -14,7 +14,14 @@ function getPriority(expression, delimiter){
             temp += multiply(parseFloat(expression.splice(pos-1,1)),parseFloat(expression.splice(pos,1)));
         }
         if(delimiter == "/"){
+            if (parseInt(expression[pos+1]) == 0) {
+                setError('Não é possível dividir por 0.');
+                setScreen("");
+                clearList(expression);
+                return expression;
+            }
             temp += divide(parseFloat(expression.splice(pos-1,1)),parseFloat(expression.splice(pos,1)));
+
         }
         expression[pos-1] = temp
     }
@@ -25,7 +32,14 @@ var screenValue;
 var elementList = [];
 var log = "";
 
-function addElement(value){
+function toList(value){
+    if(!Number.isNaN(value)){
+        elementList.push(value);
+    }
+}
+
+function addElement(){
+    value = this.value;
     if(screenValue === undefined){
         screenValue = value;
     } else {
@@ -34,10 +48,11 @@ function addElement(value){
     updateScreen(value);
 }
 
-function addOperator(operator){
-    elementList.push(parseFloat(screenValue));
+function addOperator(){
+    operator = this.value;
+    toList(parseFloat(screenValue));
     updateScreen(operator);
-    elementList.push(operator);
+    toList(operator);
     screenValue = undefined;
 }
 
@@ -47,6 +62,10 @@ function updateScreen(value){
 
 function setScreen(value){
     document.getElementById("result").textContent = value;
+}
+
+function setError(err) {
+    document.getElementById("err").textContent = err;
 }
 
 function clearList(list){
@@ -71,11 +90,18 @@ function clearAll() {
     setScreen(undefined);
 }
 
-function calculate(){
-    elementList.push(parseFloat(screenValue));
-    elementList = elementList.filter(function (value) {
-        return !Number.isNaN(value);
+function removeNaN(lst) {
+    lst.filter(function (value) {
+        return (!Number.isNaN(value));
     });
+    console.log(lst);
+    return lst;
+}
+
+function calculate(){
+    setError("");
+    console.log(screenValue);
+    toList(parseFloat(screenValue));
     while (elementList.includes("x")) {
         elementList = getPriority(elementList,"x");
     }
@@ -83,6 +109,9 @@ function calculate(){
         elementList = getPriority(elementList,"/");
     }
     result = parseFloat(elementList[0]);
+    if (Number.isNaN(result)) {
+        result = 0;
+    }
     for (let i = 0; i < elementList.length; i++) {
         if (elementList[i] == "+"){
             result = sum(result,elementList[i+1]);
@@ -94,10 +123,21 @@ function calculate(){
     }
     addLog(document.getElementById("result").textContent + " = " + result);
     clearList(elementList);
-    elementList.push(result);
+    toList(result);
     screenValue = undefined;
     setScreen(result);
     setLog();
 }
 
+function load(){
+    elementsBtn = document.getElementsByClassName("elementButton");
+    Array.from(elementsBtn).forEach(btn => btn.addEventListener("click",addElement, false));
+    
+    operatorsBtn = document.getElementsByClassName("operatorButton");
+    Array.from(operatorsBtn).forEach(btn => btn.addEventListener("click",addOperator, false));
 
+    document.getElementById("calculate").addEventListener("click",calculate, false);
+    document.getElementById("clear").addEventListener("click",clearAll, false);
+}
+
+document.addEventListener("DOMContentLoaded", load, false);
