@@ -1,7 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+html{
+  height:  -webkit-fill-available;
+  width: 100%;
+}
+
 body{
     font-family: 'Audiowide', cursive;
     font-size: larger;
+    height:100vh; 
+    margin:0; 
+    display:flex; 
+    flex-direction:column; 
 }
 
 main{
@@ -125,6 +134,29 @@ aside{
 
 .backlog{
     visibility: hidden;
+}
+
+footer{
+  background-color: #0f2424;
+    color: aliceblue;
+    width: 92%;
+    height: 50px;
+    display: flex;
+    margin-top: auto;
+    padding: 1% 4%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+footer a{
+  text-decoration: none;
+  color: aliceblue;
+}
+
+@media screen and (max-width: 480px) {
+  #footer {
+      width: 480px;
+  }
 }
 
 .slidein {
