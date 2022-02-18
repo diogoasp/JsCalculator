@@ -89,6 +89,22 @@ aside{
     color: aliceblue;
 }
 
+#result{
+  word-break: break-all;
+}
+
+#errors{
+  margin-left: 12.5%;
+  width: 75%;
+  text-align: right;
+  border-bottom: black 1px solid;
+}
+
+#err{
+  color: #A13D63;
+  width: 100%;
+  text-align: end;
+}
 #openHist{
     width: 20%;
     background-color: transparent;
@@ -97,11 +113,14 @@ aside{
     padding: 0;
 }
 
-/* #openHist:hover{
-    background-color: #0f2424;
-} */
 #openHist img{
     width: 100%;
+}
+
+#imgHist:hover{
+  animation-name: sine;
+  animation-duration: 600ms;
+  animation-direction: alternate;
 }
 
 .backlog{
@@ -299,4 +318,11 @@ aside{
 @keyframes spinOut {
     from {transform:rotate(360deg);}
     to {transform:rotate(0deg);}
+}
+
+@keyframes sine {
+  from { transform:rotate(0deg);}
+  25%{ transform:rotate(20deg);}
+  75%{ transform:rotate(-20deg);}
+  to { transform:rotate(0deg);}
 }

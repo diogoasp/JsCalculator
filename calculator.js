@@ -1,3 +1,4 @@
+// Basic operations
 function sum(a,b){return parseFloat(a+b);}
 
 function subtract(a,b){return parseFloat(a-b);}
@@ -5,32 +6,28 @@ function subtract(a,b){return parseFloat(a-b);}
 function multiply(a,b){return parseFloat(a*b);}
 
 function divide(a,b){return parseFloat(a/b);}
+// -----------------
 
-function getPriority(expression, delimiter){
+function calculatePriority(delimiter, expression, operation){
     var temp = 0;
-    if (expression.includes(delimiter)){
-        pos = expression.indexOf(delimiter);
-        if(delimiter == "x"){
-            temp += multiply(parseFloat(expression.splice(pos-1,1)),parseFloat(expression.splice(pos,1)));
-        }
-        if(delimiter == "/"){
-            if (parseInt(expression[pos+1]) == 0) {
-                setError('Não é possível dividir por 0.');
-                setScreen("");
-                clearList(expression);
-                return expression;
-            }
-            temp += divide(parseFloat(expression.splice(pos-1,1)),parseFloat(expression.splice(pos,1)));
-
-        }
-        expression[pos-1] = temp
+    pos = expression.indexOf(delimiter);
+    if(delimiter == "/" && parseInt(expression[pos+1]) == 0){
+        setError('Não é possível dividir por 0.');
+        setScreen("");
+        clearList(expression);
+        return expression;
     }
+    temp += operation(parseFloat(expression.splice(pos-1,1)),parseFloat(expression.splice(pos,1)));
+    expression[pos-1] = temp
     return expression;
 }
 
 var screenValue;
 var elementList = [];
 var log = "";
+const priorityOperationList = {"x": multiply, "/":divide};
+const nonPriorityOperationList = {"+": sum, "-":subtract};
+var erro = false;
 
 function toList(value){
     if(!Number.isNaN(value)){
@@ -66,6 +63,7 @@ function setScreen(value){
 
 function setError(err) {
     document.getElementById("err").textContent = err;
+    erro = true;
 }
 
 function clearList(list){
@@ -94,38 +92,42 @@ function removeNaN(lst) {
     lst.filter(function (value) {
         return (!Number.isNaN(value));
     });
-    console.log(lst);
     return lst;
 }
 
 function calculate(){
     setError("");
-    console.log(screenValue);
+    erro = false;
     toList(parseFloat(screenValue));
-    while (elementList.includes("x")) {
-        elementList = getPriority(elementList,"x");
-    }
-    while (elementList.includes("/")) {
-        elementList = getPriority(elementList,"/");
-    }
+
+    Object.keys(priorityOperationList).forEach(function(key) {
+        while (elementList.includes(key)) {
+            elementList = calculatePriority(key, elementList, priorityOperationList[key]);
+        }
+    });
+    
     result = parseFloat(elementList[0]);
     if (Number.isNaN(result)) {
         result = 0;
     }
     for (let i = 0; i < elementList.length; i++) {
-        if (elementList[i] == "+"){
-            result = sum(result,elementList[i+1]);
+        if (elementList[i] in nonPriorityOperationList){
+            result = nonPriorityOperationList[elementList[i]](result,elementList[i+1]);
         }
-        if (elementList[i] == "-"){
-            result = subtract(result,elementList[i+1]);
-        }
-        
     }
-    addLog(document.getElementById("result").textContent + " = " + result);
+
     clearList(elementList);
-    toList(result);
-    screenValue = undefined;
+    if(erro){
+        addLog(document.getElementById("result").textContent + "ERROR");
+        erro = false;
+        result = "";
+    } else {
+        addLog(document.getElementById("result").textContent + " = "+  result);
+        toList(result);
+    }
+    
     setScreen(result);
+    screenValue = undefined;
     setLog();
 }
 
