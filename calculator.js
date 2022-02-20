@@ -1,21 +1,63 @@
 // Basic operations
-function sum(a,b){return parseFloat(a+b);}
+function sum(a,b){return parseFloat(a)+parseFloat(b);}
 
-function subtract(a,b){return parseFloat(a-b);}
+function subtract(a,b){return parseFloat(a)-parseFloat(b);}
 
-function multiply(a,b){return parseFloat(a*b);}
+function multiply(a,b){return parseFloat(a)*parseFloat(b);}
 
-function divide(a,b){return parseFloat(a/b);}
+function divide(a,b){return parseFloat(a)/parseFloat(b);}
 // -----------------
+function calculate(expression){
+    Object.keys(priorityOperationList).forEach(function(key) {
+        while (Array.from(expression).includes(key)) {
+            expression = calculatePriority(key, expression, priorityOperationList[key]);
+        }
+    });
+    let result = parseFloat(expression[0]);
+    if (Number.isNaN(result)) {
+        result = 0;
+    }
+    for (let i = 0; i < expression.length; i++) {
+        if (expression[i] in nonPriorityOperationList){
+            result = nonPriorityOperationList[expression[i]](result,expression[i+1]);
+        }
+    }
+    return result;
+}
+
+function calculateParentheses(expression) {
+    let nLeft = expression.filter(x => x === "(").length;
+    if(nLeft != expression.filter(x => x === ")").length) {
+        setError("Uso incorreto dos parênteses.");
+        clearList(expression);
+        return expression;
+    }
+    if(nLeft == 0){
+        return expression;
+    }
+    for (let index = 0; index < nLeft; index++) {
+        let leftIndex = expression.indexOf('(');
+        let rightIndex = expression.indexOf(')');
+        let result = calculate(expression.slice(leftIndex+1,rightIndex));
+        let tempExpression = [];
+        for (let i = 0; i < expression.length; i++){
+            if(i < leftIndex+1 || i > rightIndex){
+                tempExpression.push(expression[i]);
+            } 
+        }
+        tempExpression[leftIndex] = result;
+        expression = tempExpression;
+    }
+    return expression;
+
+}
 
 function calculatePriority(delimiter, expression, operation){
     var temp = 0;
     pos = expression.indexOf(delimiter);
     if(delimiter == "/" && parseInt(expression[pos+1]) == 0){
         setError('Não é possível dividir por 0.');
-        setScreen("");
-        clearList(expression);
-        return expression;
+        return 0;
     }
     temp += operation(parseFloat(expression.splice(pos-1,1)),parseFloat(expression.splice(pos,1)));
     expression[pos-1] = temp
@@ -61,8 +103,12 @@ function setScreen(value){
     document.getElementById("result").textContent = value;
 }
 
+function getScreenTxt() {
+    return document.getElementById("result").textContent;
+}
 function setError(err) {
     document.getElementById("err").textContent = err;
+    // setScreen("");
     erro = true;
 }
 
@@ -73,13 +119,14 @@ function clearList(list){
 }
 
 function addLog(text){
-    log = text;
+    log += text;
 }
 
 function setLog(){
     var p = document.createElement("p");
     p.textContent = log;
     document.getElementById("backlog").appendChild(p);
+    log = "";
 }
 
 function clearAll() {
@@ -95,34 +142,24 @@ function removeNaN(lst) {
     return lst;
 }
 
-function calculate(){
+
+function main() {
     setError("");
-    erro = false;
+    erro = false;   
+    addLog(getScreenTxt());
     toList(parseFloat(screenValue));
-
-    Object.keys(priorityOperationList).forEach(function(key) {
-        while (elementList.includes(key)) {
-            elementList = calculatePriority(key, elementList, priorityOperationList[key]);
-        }
-    });
-    
-    result = parseFloat(elementList[0]);
-    if (Number.isNaN(result)) {
-        result = 0;
+    elementList = calculateParentheses(elementList);
+    let result = parseFloat(calculate(elementList));
+    if(isNaN(result)){
+        setError("Erro de sintaxe.");
     }
-    for (let i = 0; i < elementList.length; i++) {
-        if (elementList[i] in nonPriorityOperationList){
-            result = nonPriorityOperationList[elementList[i]](result,elementList[i+1]);
-        }
-    }
-
     clearList(elementList);
     if(erro){
-        addLog(document.getElementById("result").textContent + "ERROR");
+        addLog(" = ERROR");
         erro = false;
         result = "";
     } else {
-        addLog(document.getElementById("result").textContent + " = "+  result);
+        addLog(" = "+result);
         toList(result);
     }
     
@@ -131,6 +168,7 @@ function calculate(){
     setLog();
 }
 
+
 function load(){
     elementsBtn = document.getElementsByClassName("elementButton");
     Array.from(elementsBtn).forEach(btn => btn.addEventListener("click",addElement, false));
@@ -138,7 +176,7 @@ function load(){
     operatorsBtn = document.getElementsByClassName("operatorButton");
     Array.from(operatorsBtn).forEach(btn => btn.addEventListener("click",addOperator, false));
 
-    document.getElementById("calculate").addEventListener("click",calculate, false);
+    document.getElementById("calculate").addEventListener("click",main, false);
     document.getElementById("clear").addEventListener("click",clearAll, false);
 }
 

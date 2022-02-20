@@ -71,6 +71,7 @@ aside{
     width: 30%;
     height: 100%;
     padding: 2%;
+    margin-top: 2%;
 }
 
 .elementButton{
@@ -107,6 +108,7 @@ aside{
   width: 75%;
   text-align: right;
   border-bottom: black 1px solid;
+  min-height: 30px;
 }
 
 #err{
@@ -116,6 +118,7 @@ aside{
 }
 #openHist{
     width: 20%;
+    min-width: 40px;
     background-color: transparent;
     border: none;
     border-radius: 100%;
